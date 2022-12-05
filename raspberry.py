@@ -7,6 +7,8 @@ from pubnub.pubnub import PubNub
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNOperationType, PNStatusCategory
 
+DATASET_ID = ""
+
 load_dotenv()
 
 PUBNUB_CHANNEL = 'Moviology-Channel'
@@ -24,8 +26,14 @@ current_second = 0
 
 
 class MySubscribeCallback(SubscribeCallback):
+    def __init__(self) -> None:
+        super().__init__()
+        self.listener_state = None
+
     def message(self, pubnub, message):
-        while message.message != "stop":
+        while message.message == "start":
+            self.listener_state = "STARTED"
+
             byte = arduino.readline()
             decoded_bytes = byte.decode("utf-8")
 
@@ -33,9 +41,11 @@ class MySubscribeCallback(SubscribeCallback):
                 data_str = decoded_bytes.strip()
                 data_tokens = data_str.split(', ')
 
-                pub_list = list(map(int, data_tokens))
-                pub_list.append(current_second)
+                pub_list = []
+                pub_list.append(DATASET_ID)
                 pub_list.append(MACHINE_ID)
+                pub_list.append(list(map(int, data_tokens)))
+                pub_list.append(current_second)
 
                 current_second = current_second + 2
                 pubnub.publish().channel(PUBNUB_CHANNEL).message(pub_list).pn_async(publish_callback)
