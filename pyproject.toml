@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "raspberry-pi"
+version = "0.1.0"
+description = ""
+authors = ["KevinSilvester <kevinsilvester05@gmail.com>"]
+readme = "README.md"
+packages = [{include = "raspberry_pi"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "^0.21.0"
+pyserial = "^3.5"
+pubnub = "^7.0.2"
+flask = "^2.2.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
